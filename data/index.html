@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Nerf or Nothing</title>
+    <script type="text/javascript" src="smoothie_min.js"></script>
+</head>
+<body>
+<table style="width:25%">
+    <tr>
+        <th>Axial Accelerometer</th>
+        <td>X: <span id="ax">5000</span></td>
+        <td>Y: <span id="ay">5000</span></td>
+        <td>Z: <span id="az">5000</span></td>
+    </tr>
+    <tr>
+        <th>Radial Accelerometer</th>
+        <td>X: <span id="rx">5000</span></td>
+        <td>Y: <span id="ry">5000</span></td>
+        <td>Z: <span id="rz">5000</span></td>
+    </tr>
+</table>
+<p>Angular Velocity: <span id="av"></span> radians/second</p>
+<canvas id="angular-vel" width="400" height="100"></canvas>
+<p>Net Linear Acceleration: <span id="naa"></span> m/s^2</p>
+<canvas id="linear-acc" width="400" height="100"></canvas>
+</body>
+<footer>
+    <script>
+
+        let angular_vel_chart = new SmoothieChart();
+        angular_vel_chart.streamTo(document.getElementById("angular-vel"));
+
+        let linear_acc_chart = new SmoothieChart();
+        linear_acc_chart.streamTo(document.getElementById("linear-acc"));
+
+        let angular_vel = new TimeSeries();
+        let linear_acc = new TimeSeries();
+
+        angular_vel_chart.addTimeSeries(angular_vel);
+        linear_acc_chart.addTimeSeries(linear_acc);
+
+        let socket = new WebSocket('ws://' + location.hostname + ':81');
+
+        socket.onopen = function () {
+            socket.send("hola!");
+        };
+
+        socket.onmessage = function(e) {
+            console.log(e.data);
+            let parsed = JSON.parse(e.data);
+            document.getElementById("rx").innerHTML = parsed['rx'];
+            document.getElementById("ry").innerHTML = parsed['ry'];
+            document.getElementById("rz").innerHTML = parsed['rz'];
+            document.getElementById("ax").innerHTML = parsed['ax'];
+            document.getElementById("ay").innerHTML = parsed['ay'];
+            document.getElementById("az").innerHTML = parsed['az'];
+            document.getElementById("av").innerHTML = parsed['av'];
+            document.getElementById("naa").innerHTML = parsed['naa'];
+            angular_vel.append(new Date().getTime(), parsed['av']);
+            linear_acc.append(new Date().getTime(), parsed['naa']);
+            socket.send("k");
+        };
+
+        socket.onclose = function() {
+            console.log("closed websocket connection.");
+        };
+    </script>
+</footer>
+</html>
