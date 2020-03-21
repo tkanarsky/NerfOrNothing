@@ -61,6 +61,7 @@ void WebHandler::push(Data* m_data) {
         json << "\"ry\":" << m_data->radial_accel.y << ", ";
         json << "\"rz\":" << m_data->radial_accel.z << ", ";
         json << "\"av\":" << m_data->angularVelocity << ", ";
+        json << "\"log\":" << (m_data->logging ? "true" : "false") << ", ";
         json << "\"naa\":" << m_data->netLinearAcc << "}";
         wss.broadcastTXT(json.str().c_str());
         if (pushCounter == PUSH_EVERY_TICKS) pushCounter = 0;

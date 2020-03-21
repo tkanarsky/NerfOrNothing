@@ -6,6 +6,7 @@
     <script type="text/javascript" src="smoothie_min.js"></script>
 </head>
 <body>
+<h1 style="font-family: monospace; padding-left: 50px">Nerf or Nothing</h1>
 <table style="width:25%">
     <tr>
         <th>Axial Accelerometer</th>
@@ -37,14 +38,16 @@
         let angular_vel = new TimeSeries();
         let linear_acc = new TimeSeries();
 
-        angular_vel_chart.addTimeSeries(angular_vel);
-        linear_acc_chart.addTimeSeries(linear_acc);
+        angular_vel_chart.addTimeSeries(angular_vel, {lineWidth:2});
+        linear_acc_chart.addTimeSeries(linear_acc, {lineWidth:2});
 
         let socket = new WebSocket('ws://' + location.hostname + ':81');
 
         socket.onopen = function () {
             socket.send("hola!");
         };
+
+        let prev_log = false;
 
         socket.onmessage = function(e) {
             console.log(e.data);
@@ -60,6 +63,14 @@
             angular_vel.append(new Date().getTime(), parsed['av']);
             linear_acc.append(new Date().getTime(), parsed['naa']);
             socket.send("k");
+
+            if (parsed['log']) {
+                angular_vel_chart.seriesSet[0].options["strokeStyle"] = '#00ff00';
+                linear_acc_chart.seriesSet[0].options["strokeStyle"] = '#00ff00';
+            } else {
+                angular_vel_chart.seriesSet[0].options["strokeStyle"] = '#ffffff';
+                linear_acc_chart.seriesSet[0].options["strokeStyle"] = '#ffffff';
+            }
         };
 
         socket.onclose = function() {

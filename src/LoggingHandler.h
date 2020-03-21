@@ -22,7 +22,6 @@ public:
     static void tick(Data* data);
 private:
     static File currFile;
-    static bool logging;
     static bool lastButtonState;
     static bool latestSettledState;
     static time_t debounce_t;

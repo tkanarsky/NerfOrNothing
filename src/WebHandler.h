@@ -17,7 +17,7 @@
 #define WEB_PORT 80
 #define WS_PORT 81
 
-#define PUSH_EVERY_TICKS 2
+#define PUSH_EVERY_TICKS 5
 
 #define IP_1 192
 #define IP_2 168

@@ -28,6 +28,8 @@ struct Data {
 
     double angularVelocity = 0;
     double netLinearAcc = 0;
+
+    bool logging = false;
 };
 
 #endif //NERF_DATA_H

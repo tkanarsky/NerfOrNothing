@@ -5,7 +5,6 @@
 #include "LoggingHandler.h"
 #include <sstream>
 
-bool LoggingHandler::logging = false;
 bool LoggingHandler::lastButtonState = false;
 bool LoggingHandler::latestSettledState = false;
 time_t LoggingHandler::debounce_t = 0;
@@ -13,7 +12,6 @@ File LoggingHandler::currFile = File();
 FtpServer ftp = FtpServer();
 
 void LoggingHandler::init() {
-//    SPIFFS.begin();
     debounce_t = millis();
     Serial.println("About to initialize ftp server...");
     Serial.println("Initialized ftp server...");
@@ -29,7 +27,7 @@ void LoggingHandler::deinit() {
 }
 
 void LoggingHandler::tick(Data* m_data) {
-    if (logging && currFile) {
+    if (m_data->logging && currFile) {
         std::ostringstream line;
         line << millis() << ",";
         line << m_data->radial_accel_mapped.x << ",";
@@ -46,8 +44,8 @@ void LoggingHandler::tick(Data* m_data) {
         if (current != latestSettledState) {
             latestSettledState = current;
             if (!current) {
-                logging = !logging;
-                if (logging) { // we just started logging
+                m_data->logging = !m_data->logging;
+                if (m_data->logging) { // we just started logging
                     std::ostringstream path;
                     path << "/" << millis() << ".csv";
                     currFile = SPIFFS.open(path.str().c_str(), "w");
