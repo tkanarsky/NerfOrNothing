@@ -9,7 +9,8 @@ Firmware for a smart Nerf ball prototype. Features:
 * Hosts an FTP server to pull log data from file storage
 
 To compile, initialize a PlatformIO project using the platformio.ini file in 
-the repo, then do `platformio upload` with a NodeMCU connected to the computer
+the repo, do `platformio uploadfs` to upload html and js data to the filesystem, 
+then do `platformio upload` with a NodeMCU connected to the computer
 to flash the ESP8266 chip and begin logging data.
 
 Hardware:
